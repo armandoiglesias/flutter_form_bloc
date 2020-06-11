@@ -3,9 +3,10 @@ import 'package:form_validation/scr/bloc/provider.dart';
 import 'package:form_validation/scr/providers/usuario_provider.dart';
 import 'package:form_validation/scr/utils/utils.dart' as utils;
 
+class RegistroPage extends StatelessWidget {
 
+  final UsuarioProvider up = UsuarioProvider();
 
-class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,7 +116,7 @@ class LoginPage extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   Text(
-                    "Ingreso",
+                    "Crear Cuenta",
                     style: TextStyle(
                       fontSize: 20.0,
                     ),
@@ -140,12 +141,11 @@ class LoginPage extends StatelessWidget {
             height: 20.0,
           ),
           FlatButton(
-            child: Text("Registrarse"),
+            child : Text("Ingresar"),
             onPressed: (){
-              Navigator.pushReplacementNamed(context, "registro");
+              Navigator.pushReplacementNamed(context, "login");
             },
-          )
-          ,
+          ),
           SizedBox(
             height: 100.0,
           ),
@@ -205,8 +205,6 @@ class LoginPage extends StatelessWidget {
         });
   }
 
-  final UsuarioProvider up = UsuarioProvider();
-
   Widget _crearBoton(LoginBloc bloc) {
     return StreamBuilder(
       stream: bloc.formValidStream,
@@ -214,20 +212,21 @@ class LoginPage extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return RaisedButton(
           onPressed: snapshot.data ? () async {
+            //await up.nuevoUSuario(bloc.email, bloc.password);
 
-            Map info = await up.login(bloc.email, bloc.password);
+            Map info = await up.nuevoUSuario(bloc.email, bloc.password);
             if( info["ok"] ){
               Navigator.of(context).pushReplacementNamed("home");
             }
             else{
               utils.mostrarAlerta(context, info["mensaje"] );
             }
-            
+            //Navigator.of(context).pushReplacementNamed("home");
 
           } : null,
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 80.0, vertical: 15.0),
-            child: Text("Ingresar"),
+            child: Text("Crear Cuenta"),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5.0),
@@ -239,6 +238,4 @@ class LoginPage extends StatelessWidget {
       },
     );
   }
-
- 
 }
