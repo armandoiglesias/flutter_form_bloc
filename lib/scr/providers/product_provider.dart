@@ -62,6 +62,8 @@ class ProductProvider{
     
   }
 
+  
+
   Future<String> subirImage( File imagen ) async{
     final url = Uri.parse("https://api.cloudinary.com/v1_1/dkqzeynks/image/upload");
     final _mime = mimeType.mime (imagen.path).split("/");

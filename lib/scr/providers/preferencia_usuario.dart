@@ -24,6 +24,14 @@ class PreferenciasUsuario {
   set token( String value ) {
     _prefs.setString('token', value);
   }
+
+  get refreshToken {
+    return _prefs.getString('refreshToken') ?? '';
+  }
+
+  set refreshToken( String value ) {
+    _prefs.setString('refreshToken', value);
+  }
   
 
   // GET y SET de la última página

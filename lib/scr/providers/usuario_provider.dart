@@ -29,7 +29,7 @@ class UsuarioProvider{
     
 
     if( decodedResp.containsKey("idToken")){
-
+      _prefs.refreshToken = decodedResp["refreshToken"];
       _prefs.token = decodedResp["idToken"];
       // Salvar el token
       return {
@@ -66,6 +66,44 @@ class UsuarioProvider{
     
     if( decodedResp.containsKey("idToken")){
       // Salvar el token
+      _prefs.token = decodedResp["idToken"];
+      _prefs.refreshToken = decodedResp["refreshToken"];
+
+      return {
+        "ok" : true,
+        "token": decodedResp["idToken"]
+      };
+    }
+    else{
+      return {
+        "ok" : false,
+        "mensaje" :decodedResp["error"]["message"],
+      };
+    }
+    
+
+  }
+
+  Future<Map<String, dynamic>> refreshToken( ) async {
+
+  String url = "https://securetoken.googleapis.com/v1/token?key=$_firebaseToken";
+
+
+    final authData = {
+      "grant_type" : "refresh_token",
+      "refresh_token" : _prefs.refreshToken,
+    };
+
+    final resp = await http.post(url, 
+      body: json.encode(authData)
+    );
+
+    Map<String, dynamic> decodedResp = json.decode(resp.body);
+    print( decodedResp );
+    
+    if( decodedResp.containsKey("idToken")){
+      // Salvar el token
+      _prefs.refreshToken = decodedResp["refreshToken"];
       _prefs.token = decodedResp["idToken"];
 
       return {

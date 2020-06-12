@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:form_validation/scr/bloc/login_bloc.dart';
 export 'package:form_validation/scr/bloc/login_bloc.dart';
 
+import 'package:form_validation/scr/bloc/producto_bloc.dart';
+export 'package:form_validation/scr/bloc/producto_bloc.dart';
+
+
 class Provider extends InheritedWidget{
+
+ final loginBloc = LoginBloc();
+ final _productoBloc = ProductoBloc();
 
   static Provider _instancia;
 
@@ -14,8 +21,6 @@ class Provider extends InheritedWidget{
     return _instancia;
   } 
 
-  final loginBloc = LoginBloc();
-
   Provider._internal({  Key key, Widget child }) : super(key: key, child : child );
 
   @override
@@ -23,6 +28,10 @@ class Provider extends InheritedWidget{
 
   static LoginBloc of ( BuildContext context ){
     return context.dependOnInheritedWidgetOfExactType<Provider>().loginBloc;
+  }
+
+  static ProductoBloc productoBloc ( BuildContext context ){
+    return context.dependOnInheritedWidgetOfExactType<Provider>()._productoBloc;
   }
   
 

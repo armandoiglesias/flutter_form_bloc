@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:form_validation/scr/bloc/provider.dart';
 import 'package:form_validation/scr/model/producto_model.dart';
-import 'package:form_validation/scr/providers/product_provider.dart';
 
 class HomePage extends StatelessWidget {
-  final pp = ProductProvider();
 
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of(context);
+    //final bloc = Provider.of(context);
+
+    final productoBloc = Provider.productoBloc(context);
+    productoBloc.cargarProductos();
 
     return Scaffold(
       appBar: AppBar(
         title: Text("Home Page"),
       ),
-      body: _crearListado(),
+      body: _crearListado(productoBloc),
       floatingActionButton: _crearBoton(context),
     );
   }
@@ -29,9 +30,9 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _crearListado() {
-    return FutureBuilder(
-      future: pp.cargarProductos(),
+  Widget _crearListado( ProductoBloc p ) {
+    return StreamBuilder(
+      stream: p.productosStream  ,
       //initialData: InitialData,
       builder:
           (BuildContext context, AsyncSnapshot<List<ProductoModel>> snapshot) {
@@ -40,7 +41,7 @@ class HomePage extends StatelessWidget {
           return ListView.builder(
             itemCount: productos.length,
             itemBuilder: (BuildContext context, int index) {
-              return _crearItem(context, productos[index]);
+              return _crearItem(context, productos[index], p);
             },
           );
         } else {
@@ -52,12 +53,12 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _crearItem(BuildContext context, ProductoModel model) {
+  Widget _crearItem(BuildContext context, ProductoModel model, ProductoBloc p) {
     return Dismissible(
       key: UniqueKey(),
       background: Container(color: Colors.red),
       onDismissed: (direction) {
-        pp.borrarProducto(model.id);
+        p.borrarProducto(model.id);
       },
       child: Card(
         child: Column(

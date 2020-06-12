@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:form_validation/scr/bloc/provider.dart';
 import 'package:form_validation/scr/model/producto_model.dart';
-import 'package:form_validation/scr/providers/product_provider.dart';
 import 'package:form_validation/scr/utils/utils.dart' as utils;
 import 'package:image_picker/image_picker.dart';
 
@@ -19,11 +19,14 @@ class _ProductoPageState extends State<ProductoPage> {
   bool isSaving = false;
 
   ProductoModel model = ProductoModel();
-
-  final productoProvider = ProductProvider();
+  ProductoBloc productoBloc;
 
   @override
   Widget build(BuildContext context) {
+
+
+
+    productoBloc = Provider.productoBloc(context);
     final ProductoModel args = ModalRoute.of(context).settings.arguments;
     if (args != null) {
       model = args;
@@ -115,7 +118,7 @@ class _ProductoPageState extends State<ProductoPage> {
     );
   }
 
-  void _submit() async {
+  void _submit( ) async {
     if (!formKey.currentState.validate()) {
       return;
     }
@@ -127,23 +130,24 @@ class _ProductoPageState extends State<ProductoPage> {
     });
 
     if (foto != null) {
-      model.photoUrl = await productoProvider.subirImage(foto);
+      model.photoUrl = await productoBloc.subirFoto(foto);
     }
 
     print(model.photoUrl);
 
+    
+
     if (model.id != null) {
-      productoProvider.editarProducto(model);
+      productoBloc.editarProducto(model);
     } else {
-      productoProvider.crearProducto(model);
+      productoBloc.agregarProducto(model);
     }
 
     setState(() {
       isSaving = false;
     });
     mostrarSnackBar("Registro Guardado");
-
-    Navigator.pop(context);
+    Navigator.of(context).pop();
   }
 
   Widget _crearDisponibleSwitch() {
